@@ -1,0 +1,33 @@
+# Use root/example as user/password credentials
+version: '3.1'
+
+services:
+    mysql-proxy:
+        image: mysql:5.7
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        ports:
+            - "3366:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: sqlmestre
+            MYSQL_DATABASE: sakila
+        volumes:
+            - "./Database/mysql-sakila-schema.sql:/docker-entrypoint-initdb.d/1.sql"
+            - "./Database/mysql-sakila-insert-data.sql:/docker-entrypoint-initdb.d/2.sql"
+    mysql-master:
+        image: mysql:5.7
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        ports:
+            - "3367:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: sqlmestre
+            MYSQL_DATABASE: sakila
+        volumes:
+            - "./Database/mysql-sakila-schema.sql:/docker-entrypoint-initdb.d/1.sql"
+            - "./Database/mysql-sakila-insert-data.sql:/docker-entrypoint-initdb.d/2.sql"
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8080:8080
